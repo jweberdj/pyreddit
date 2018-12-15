@@ -1,10 +1,19 @@
 import praw
+import yaml
 
-reddit = praw.Reddit(client_id='8lqDe9bsPlCVtg',
-                     client_secret='RI8qqrHOy2lz6rF7MNnbdgZdZ6Q',
-                     user_agent='python:8lqDe9bsPlCVtg:1.0.0 (by /u/learningdnd)')
+f = open('config.yml')
+params = yaml.load(f)
+f.close()
 
-print(reddit.read_only)
+cid = params['auth']['client_id']
+csecret = params['auth']['client_secret']
+uagent = params['auth']['user_agent']
 
-for submission in reddit.subreddit(reddit.random_subreddit(nsfw=False).display_name).hot(limit=10):
-    print(submission.title)
+reddit = praw.Reddit(client_id=cid,
+                     client_secret=csecret,
+                     user_agent=uagent)
+
+subr = reddit.random_subreddit(nsfw=False).display_name
+print('Subreddit: {}'.format(subr))
+for submission in reddit.subreddit(subr).hot(limit=10):
+    print('* {}'.format(submission.title))
